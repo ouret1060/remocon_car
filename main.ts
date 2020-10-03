@@ -29,7 +29,41 @@ let left = 0
 let right = 0
 basic.showIcon(IconNames.Heart)
 PCA9685.reset(67)
-basic.forever(function on_forever() {
+function rotation() {
+    
+    let cur_left = input.rotation(Rotation.Roll) < -30 ? 50 : 0
+    if (input.rotation(Rotation.Pitch) < -30) {
+        
+    } else if (input.rotation(Rotation.Pitch) > 30) {
+        cur_left = -cur_left
+    } else {
+        cur_left = 0
+    }
+    
+    if (left != cur_left) {
+        left = cur_left
+        serial.writeValue("left", left)
+        radio.sendValue("left", left)
+    }
+    
+    let cur_right = input.rotation(Rotation.Roll) > 30 ? 50 : 0
+    if (input.rotation(Rotation.Pitch) < -30) {
+        
+    } else if (input.rotation(Rotation.Pitch) > 30) {
+        cur_right = -cur_right
+    } else {
+        cur_right = 0
+    }
+    
+    if (right != cur_right) {
+        right = cur_right
+        serial.writeValue("right", right)
+        radio.sendValue("right", right)
+    }
+    
+}
+
+function ab_button() {
     
     let cur_left = input.buttonIsPressed(Button.A) ? 50 : 0
     if (left != cur_left) {
@@ -45,4 +79,8 @@ basic.forever(function on_forever() {
         radio.sendValue("right", right)
     }
     
+}
+
+basic.forever(function on_forever() {
+    ab_button()
 })
